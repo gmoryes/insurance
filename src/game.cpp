@@ -1,4 +1,5 @@
 #include "game.hpp"
+
 #include "insurance.hpp"
 
 #include "base.hpp"
@@ -19,7 +20,15 @@ void Game::SetDemand(Insurance::Type insuranceType, uint32_t demand)
 
 void Game::DoStep()
 {
-  //PayTaxes();
+  // Шаг 1. Платим налоги государству
+  m_company.PayTaxes(m_taxPercent);
 
+  // Шаг 2. Продажа населению страховок
+  m_company.SellInsurances();
+
+  // Шаг 3. Выплата страховок согласно произошедшим страховым случаям
+  m_company.PayForInsurances();
+
+  ++m_duration;
 }
 

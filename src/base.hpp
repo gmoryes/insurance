@@ -4,10 +4,10 @@
 #include <sstream>
 #include <string>
 
-std::string CAT() { return ""; }
+inline std::string ToString() { return ""; }
 
 template <typename T>
-std::string CAT(T arg)
+inline std::string ToString(T arg)
 {
   std::stringstream ss;
   ss << arg;
@@ -15,16 +15,26 @@ std::string CAT(T arg)
 }
 
 template <typename T, typename... Args>
-std::string CAT(T current, Args... args)
+inline std::string ToString(T current, Args... args)
 {
   std::string result;
-  result += CAT(current);
+  result += ToString(current);
   result += " ";
-  result += CAT(args...);
+  result += ToString(args...);
   return result;
+}
+
+template <typename T>
+inline T FromString(std::string const & input)
+{
+  T res = T();
+  std::stringstream ss;
+  ss << input;
+  ss >> res;
+  return res;
 }
 
 #define CHECK(X, msg) do { if (X) {} else { \
   std::cerr << __FILE__ << ":" << __LINE__ << " " \
-  << __FUNCTION__ << "() CHECK("#X"): " << CAT msg \
+  << __FUNCTION__ << "() CHECK("#X"): " << ToString msg \
   << std::endl; std::abort(); } } while(false)

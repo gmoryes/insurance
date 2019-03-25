@@ -2,30 +2,22 @@
 #include "src/insurance.hpp"
 #include "src/main_window.hpp"
 
+#include "src/base.hpp"
+
 #include <iostream>
+#include <memory>
+#include <sstream>
+#include <string>
 
 int main(int argc, char ** argv)
 {
   QApplication app(argc, argv);
   MainWindow win;
 
-  QDesktopWidget dw;
-
-  int x = static_cast<int>(dw.width() * 0.7);
-  int y = static_cast<int>(dw.height() * 0.7);
-
-  win.setFixedSize(x,y);
-  win.setWindowTitle("MISHA APPLICATION");
+  win.setWindowTitle("Экономическая игра");
   win.show();
 
   Game & game = Game::Instance();
-
-  // Set base demand to different type of insurancies
-  game.SetDemands({
-    {Insurance::Type::Home, 50 /* demand */},
-    {Insurance::Type::Car, 100 /* demand */},
-    {Insurance::Type::Health, 150, /* demand */}
-  });
 
   /*
    * Set just one demand from qt callback

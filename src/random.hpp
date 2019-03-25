@@ -29,6 +29,13 @@ public:
   std::vector<int> GenPermutation(size_t count);
 
   template<class T>
+  T GenReal(T from, T to)
+  {
+    std::uniform_real_distribution<T> dist(from, to);
+    return dist(m_gen);
+  }
+
+  template<class T>
   T GenInt(T from, T to)
   {
     std::uniform_int_distribution<T> dist(from, to);

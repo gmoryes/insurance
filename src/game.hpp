@@ -19,10 +19,14 @@ public:
   void SetDemand(Insurance::Type insuranceType, uint32_t demand);
   void SetTaxPercent(double taxPercent) { m_taxPercent = taxPercent; }
 
-  void SetStartFunc(double startFund) { m_startFund = startFund; }
+  void SetStartFunc(double startFund) { m_company.GetCurrentFund() = startFund; }
 
   void SetGameDuration(uint32_t duration) { m_duration = duration; }
+  uint32_t GetCurrentMonth() const { return m_currentMonth; }
   uint32_t GetDuration() const { return m_duration; }
+
+  bool IsLose() const { return m_company.GetCurrentFund() <= 0; }
+  bool IsWin() const { return m_currentMonth == m_duration; }
 
 private:
   // Базовые требования
@@ -31,8 +35,8 @@ private:
   // Налоги государству
   double m_taxPercent = 0.0;
 
-  // Начальный капитал
-  double m_startFund = 0.0;
+  // Текущий месяц
+  uint32_t m_currentMonth = 0;
 
   // Время игры в месяцах
   uint32_t m_duration = 0;

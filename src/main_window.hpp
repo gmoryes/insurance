@@ -19,19 +19,16 @@ public:
 
   using ReadFromUselCallback = std::function<ControlFlow(std::string const &)>;
 
-	explicit MainWindow(QWidget * parent = nullptr, Qt::WindowFlags flags = 0);
-
-	void ReadFromUser(std::string const & title, ReadFromUselCallback && callback);
-
-	void CreateDurationLabel();
-
-	void CreateFundLabel();
-
-	void CreateDemandLabel(Insurance::Type type);
-
-	void ShowInsuranceInfo(Insurance::Type type, bool first);
+  explicit MainWindow(QWidget * parent = nullptr, Qt::WindowFlags flags = 0);
 
 private:
+  void ReadFromUser(std::string const & title, ReadFromUselCallback && callback, std::string const & defaultMessage);
+  void CreateDurationLabel();
+  void CreateFundLabel();
+  void CreateDemandLabel(Insurance::Type type);
+  void ShowInsuranceInfo(Insurance::Type type, bool first);
+  void CreateStepButton();
+  void ShowMessage(std::string const & message);
   // W, H
   std::pair<uint32_t, uint32_t> m_windowSize;
 
@@ -39,13 +36,14 @@ private:
 
   struct Label
 	{
-  	void ChangeLabelText(std::string const & toAppend);
-		std::unique_ptr<QLabel> m_label;
-		std::unique_ptr<QPushButton> m_settingsButton;
-		std::string m_title;
+    void ChangeLabelText(std::string const & toAppend);
+    std::unique_ptr<QLabel> m_label;
+    std::unique_ptr<QPushButton> m_settingsButton;
+    std::string m_title;
 	};
 
   Label m_durationLabel;
-	Label m_fundLabel;
-	std::map<Insurance::Type, Label> m_demandLabels;
+  Label m_fundLabel;
+  std::map<Insurance::Type, Label> m_demandLabels;
+  std::unique_ptr<QPushButton> m_stepButton;
 };

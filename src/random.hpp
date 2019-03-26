@@ -5,11 +5,12 @@
 #include <random>
 #include <string>
 #include <vector>
+#include <ctime>
 
 class RandomGenerator
 {
 public:
-  explicit RandomGenerator(uint32_t seed = 738547485u): m_gen(seed) {}
+  explicit RandomGenerator(): m_gen(std::random_device{}()) {}
 
   template<class T>
   std::vector<T> GenIntegralVector(size_t count, T from, T to)

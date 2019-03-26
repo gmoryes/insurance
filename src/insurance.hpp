@@ -24,6 +24,15 @@ public:
     MaxValue
   };
 
+  Insurance() = default;
+  Insurance(PaymentType paymentType, double monthPaymentValue, uint32_t contractTime,
+            double maxSatisfactionValue, double minDamageValue)
+    : m_paymentType(paymentType),
+      m_monthPaymentValue(monthPaymentValue),
+      m_contractTime(contractTime),
+      m_maxSatisfactionValue(maxSatisfactionValue),
+      m_minDamageValue(minDamageValue) {}
+
   double GetDemandCoef() const;
 
   double GetMinDamage() const { return m_minDamageValue; }
@@ -38,6 +47,7 @@ public:
   double GetMaxSatisfactionValue() const { return m_maxSatisfactionValue; }
   double & GetMaxSatisfactionValue() { return m_maxSatisfactionValue; }
 
+  PaymentType GetPaymentType() const { return m_paymentType; }
 private:
   PaymentType m_paymentType = PaymentType::MaxValue;
 

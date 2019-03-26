@@ -20,6 +20,8 @@ void Game::SetDemand(Insurance::Type insuranceType, uint32_t demand)
 
 void Game::DoStep()
 {
+  CHECK(m_currentMonth < m_duration, ("The game is end."));
+
   // Шаг 1. Платим налоги государству
   m_company.PayTaxes(m_taxPercent);
 
@@ -29,6 +31,6 @@ void Game::DoStep()
   // Шаг 3. Выплата страховок согласно произошедшим страховым случаям
   m_company.PayForInsurances();
 
-  ++m_duration;
+  ++m_currentMonth;
 }
 

@@ -31,6 +31,9 @@ void Game::DoStep()
   // Шаг 3. Выплата страховок согласно произошедшим страховым случаям
   m_company.PayForInsurances();
 
+  // Шаг 4. Находим просроченные страховки
+  m_outdatedInsurances = m_company.GetOutdatedInsurances();
+
   ++m_currentMonth;
 }
 

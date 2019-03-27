@@ -32,6 +32,10 @@ public:
   Insurance & GetInsurance(Insurance::Type type) { return m_insurancies[type]; }
   uint32_t GetInsuranceSoldNumber(Insurance::Type type) { return m_insuranciesSold[type]; }
 
+  std::vector<Insurance::Type> GetOutdatedInsurances();
+
+  uint32_t GetMonthPayedInsurances(Insurance::Type type) const { return m_insurancesNumberInMonth.at(type); }
+
 private:
 
   /// \brief Производит перерасчет спроса в зависимости от того сколько стоит страховка
@@ -50,6 +54,6 @@ private:
   // Кол-во проданных страховок каждого типа
   std::map<Insurance::Type, uint32_t> m_insuranciesSold;
 
-  size_t m_insuranceDeadline;
-  size_t m_insuranceSalesCount = 0;
+  // Сколько выплат по страховым случаям произошло в этом месяце
+  std::map<Insurance::Type, uint32_t> m_insurancesNumberInMonth;
 };

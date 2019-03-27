@@ -51,7 +51,7 @@ MainWindow::MainWindow(QWidget * parent, Qt::WindowFlags flags) : QMainWindow(pa
 
   for (auto const type : {Insurance::Type::Car, Insurance::Type::Health, Insurance::Type::Home})
   {
-    ShowInsuranceInfo(type, true /* first */);
+    ShowInsuranceInfo(type, true /* first */, false /* forceUpdate */);
     CreateDemandLabel(type);
     m_demandLabels[type].ChangeLabelText(ToString(m_game.GetCompany().GetDemand(type)));
   }
@@ -106,21 +106,21 @@ void MainWindow::CreateDemandLabel(Insurance::Type type)
   auto number = static_cast<uint32_t>(type);
 
   auto && [w, h] = m_windowSize;
-  m_demandLabels[type].m_label->setGeometry(QRect(w - 310, 100 + 40 * number, 300, 40));
+  m_demandLabels[type].m_label->setGeometry(QRect(w - 310, 100 + 50 * number, 300, 50));
 
   m_demandLabels[type].m_settingsButton = std::make_unique<QPushButton>("Посмотреть/Изменить", this);
-  m_demandLabels[type].m_settingsButton->setGeometry(QRect(w - 530, 100 + 40 * number - 4, 200, 50));
+  m_demandLabels[type].m_settingsButton->setGeometry(QRect(w - 530, 100 + 50 * number + 0, 200, 50));
   auto * ptr = m_demandLabels[type].m_settingsButton.get();
 
   auto const handler = [type, this](QObject * sender, bool pressed) {
     std::cout << "clicked to " << ToString(type) << std::endl;
-    ShowInsuranceInfo(type, false /* first */);
+    ShowInsuranceInfo(type, false /* first */, false /* forceUpdate */);
   };
 
   QObject::connect(ptr, &QPushButton::clicked, std::bind(handler, ptr, std::placeholders::_1));
 }
 
-void MainWindow::ShowInsuranceInfo(Insurance::Type type, bool first = false)
+void MainWindow::ShowInsuranceInfo(Insurance::Type type, bool first = false, bool forceUpdate = false)
 {
   QDialog dialog(this);
   // Use a layout allowing to have a label next to each field
@@ -136,7 +136,6 @@ void MainWindow::ShowInsuranceInfo(Insurance::Type type, bool first = false)
   {
     auto * lineEdit = new QLineEdit(&dialog);
     QString label = QString(title.c_str());
-    //if (!first)
     lineEdit->setText(ToString(value).c_str());
 
     form.addRow(label, lineEdit);
@@ -221,7 +220,6 @@ void MainWindow::ShowInsuranceInfo(Insurance::Type type, bool first = false)
       auto const & input = lineEdit->text().toStdString();
       if (first && count == 0)
       {
-//        m_game.GetCompany().GetDemand(type) = FromString<uint32_t>(input);
         demand = FromString<uint32_t>(input);
         first = false;
         continue;
@@ -231,7 +229,6 @@ void MainWindow::ShowInsuranceInfo(Insurance::Type type, bool first = false)
       {
       case 0:
       {
-//        auto value = FromString<double>(input);
         monthPaymentValue = FromString<double>(input);
         if (monthPaymentValue <= 0)
         {
@@ -256,7 +253,6 @@ void MainWindow::ShowInsuranceInfo(Insurance::Type type, bool first = false)
       }
       case 2:
       {
-//        auto value = FromString<double>(input);
         maxSatisfactionValue = FromString<double>(input);
         if (maxSatisfactionValue <= 0)
         {
@@ -268,7 +264,6 @@ void MainWindow::ShowInsuranceInfo(Insurance::Type type, bool first = false)
       }
       case 3:
       {
-//        auto damage = FromString<double>(input);
         minDamage = FromString<double>(input);
         if (!(0 < minDamage && minDamage < 1))
         {
@@ -296,11 +291,11 @@ void MainWindow::ShowInsuranceInfo(Insurance::Type type, bool first = false)
     return ShowInsuranceInfo(type, saveFirst);
 
   m_game.GetCompany().GetDemand(type) = demand;
-  m_game.GetCompany().GetInsurance(type) = Insurance(paymentType,
-                                                     monthPaymentValue,
-                                                     contractTime,
-                                                     maxSatisfactionValue,
-                                                     minDamage);
+  auto newInsurance = Insurance(paymentType, monthPaymentValue, contractTime,
+                                maxSatisfactionValue, minDamage);
+
+  if (m_game.GetCompany().GetInsurance(type) != newInsurance || forceUpdate)
+    m_game.GetCompany().GetInsurance(type) = newInsurance;
 }
 
 void MainWindow::CreateStepButton()
@@ -330,7 +325,9 @@ void MainWindow::CreateStepButton()
     {
       m_demandLabels[type].ChangeLabelText(ToString(demand) +
                                            "\nПродано: " +
-                                           ToString(m_game.GetCompany().GetInsuranceSoldNumber(type)));
+                                           ToString(m_game.GetCompany().GetInsuranceSoldNumber(type)) +
+                                           "\nВыплат в текущем месяце: " +
+                                           ToString(m_game.GetCompany().GetMonthPayedInsurances(type)));
     }
 
     if (m_game.IsLose())
@@ -343,6 +340,14 @@ void MainWindow::CreateStepButton()
     {
       ShowMessage("Вы победили :)");
       return;
+    }
+
+    auto const & outdatedInsurances = m_game.GetOutdatedInsurances();
+    if (!outdatedInsurances.empty())
+    {
+      ShowMessage("У некоторых страховок закончился срок действия, нужно обновить/оставить условия");
+      for (auto type : outdatedInsurances)
+        ShowInsuranceInfo(type, false /* first */, true /* forceUpdate */);
     }
   };
 

@@ -26,7 +26,7 @@ private:
   void CreateDurationLabel();
   void CreateFundLabel();
   void CreateDemandLabel(Insurance::Type type);
-  void ShowInsuranceInfo(Insurance::Type type, bool first);
+  void ShowInsuranceInfo(Insurance::Type type, bool first, bool forceUpdate);
   void CreateStepButton();
   void ShowMessage(std::string const & message);
   // W, H

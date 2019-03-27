@@ -79,10 +79,11 @@ void Company::SellInsurances()
 void Company::PayForInsurances()
 {
   RandomGenerator generator;
-  for (auto && [_, insurance] : m_insurancies)
+  for (auto && [type, insurance] : m_insurancies)
   {
     auto insurancesNumber = generator.GenInt<uint32_t>(kMinNumberOfInsurancesPerMonth,
                                                        kMaxNumberOfInsurancesPerMonth);
+    m_insurancesNumberInMonth[type] = insurancesNumber;
 
     for (auto const damage : generator.GenRealVector(insurancesNumber, 0, 1))
     {
@@ -93,4 +94,18 @@ void Company::PayForInsurances()
       m_currentFund -= paymentValue;
     }
   }
+}
+
+std::vector<Insurance::Type> Company::GetOutdatedInsurances()
+{
+  std::vector<Insurance::Type> result;
+  for (auto && [type, insurance] : m_insurancies)
+  {
+    if (insurance.GetPassedTime() + 1 == insurance.GetContractTime())
+      result.emplace_back(type);
+    else
+      ++insurance.GetPassedTime();
+  }
+
+  return result;
 }

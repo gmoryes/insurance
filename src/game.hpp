@@ -28,6 +28,8 @@ public:
   bool IsLose() const { return m_company.GetCurrentFund() <= 0; }
   bool IsWin() const { return m_currentMonth == m_duration; }
 
+  std::vector<Insurance::Type> const & GetOutdatedInsurances() const { return m_outdatedInsurances; }
+
 private:
   // Базовые требования
   Company::Demands m_baseDemand;
@@ -42,4 +44,6 @@ private:
   uint32_t m_duration = 0;
 
   Company m_company;
+
+  std::vector<Insurance::Type> m_outdatedInsurances;
 };

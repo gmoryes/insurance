@@ -41,6 +41,9 @@ public:
   uint32_t GetContractTime() const { return m_contractTime; }
   uint32_t & GetContractTime() { return m_contractTime; }
 
+  uint32_t GetPassedTime() const { return m_passedTime; }
+  uint32_t & GetPassedTime() { return m_passedTime; }
+
   double GetMonthPaymentValue() const { return m_monthPaymentValue; }
   double & GetMonthPaymentValue() { return m_monthPaymentValue; }
 
@@ -48,6 +51,19 @@ public:
   double & GetMaxSatisfactionValue() { return m_maxSatisfactionValue; }
 
   PaymentType GetPaymentType() const { return m_paymentType; }
+
+  bool operator==(Insurance const & rhs) const
+  {
+    return m_paymentType == rhs.m_paymentType && m_monthPaymentValue == rhs.m_monthPaymentValue &&
+           m_contractTime == rhs.m_contractTime && m_maxSatisfactionValue == rhs.m_maxSatisfactionValue &&
+           m_minDamageValue == rhs.m_minDamageValue;
+  }
+
+  bool operator!=(Insurance const & rhs) const
+  {
+    return !(*this == rhs);
+  }
+
 private:
   PaymentType m_paymentType = PaymentType::MaxValue;
 
@@ -56,6 +72,8 @@ private:
 
   // Длительность строховки в месяцах
   uint32_t m_contractTime = 0;
+
+  uint32_t m_passedTime = 0;
 
   // Сумма макс. возмещения ущерба
   double m_maxSatisfactionValue = 0.0;

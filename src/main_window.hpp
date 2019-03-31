@@ -35,12 +35,12 @@ private:
   Game m_game;
 
   struct Label
-	{
+  {
     void ChangeLabelText(std::string const & toAppend);
     std::unique_ptr<QLabel> m_label;
     std::unique_ptr<QPushButton> m_settingsButton;
     std::string m_title;
-	};
+  };
 
   Label m_durationLabel;
   Label m_fundLabel;

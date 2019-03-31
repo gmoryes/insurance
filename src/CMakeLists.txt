@@ -1,4 +1,4 @@
-project(sources)
+cmake_minimum_required(VERSION 3.13)
 
 set (CMAKE_PREFIX_PATH "/usr/local/Cellar/qt/5.9.1/")
 # find the location of Qt header files and libraries

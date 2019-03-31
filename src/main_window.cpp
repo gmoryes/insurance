@@ -49,6 +49,23 @@ MainWindow::MainWindow(QWidget * parent, Qt::WindowFlags flags) : QMainWindow(pa
     "200000" /* default */
   );
 
+  ReadFromUser(
+      "Введите проценты от гос-ва (целое число большее 0)",
+      [&](std::string const & input) {
+        auto percent = FromString<int32_t>(input);
+        if (percent <= 0)
+          return ControlFlow::Continue;
+
+        m_game.SetTaxPercent(percent / 100.0);
+        std::cout << "Game tax percent is set to: " << percent << std::endl;
+
+        CreateFundLabel();
+        m_fundLabel.ChangeLabelText(ToString(percent));
+        return ControlFlow::Stop;
+      },
+      "9" /* default */
+  );
+
   for (auto const type : {Insurance::Type::Car, Insurance::Type::Health, Insurance::Type::Home})
   {
     ShowInsuranceInfo(type, true /* first */, false /* forceUpdate */);
